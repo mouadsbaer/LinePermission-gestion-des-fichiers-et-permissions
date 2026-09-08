@@ -1,6 +1,7 @@
 package ma.youcode.lineperm.service;
 
 import ma.youcode.lineperm.model.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -50,5 +51,24 @@ public class UserService {
         } catch (IOException e) {
             System.err.println("Erreur lors de la sauvegarde : " + e.getMessage());
         }
+    }
+
+    public void signup(String login, String password) {
+        if (login == null || login.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le login ne peut pas etre vide.");
+        }
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le mot de passe ne peut pas etre vide.");
+        }
+        if (usersByLogin.containsKey(login)) {
+            throw new IllegalArgumentException("Ce login est deja pris.");
+        }
+
+        String salt = BCrypt.gensalt();
+        String hash = BCrypt.hashpw(password, salt);
+
+        User newUser = new User(login, hash);
+        usersByLogin.put(login, newUser);
+        saveUsers();
     }
 }

@@ -53,6 +53,11 @@ public class UserService {
         }
     }
 
+    /**
+     * Cree un nouveau compte.
+     * Leve une IllegalArgumentException si le login est invalide, deja pris,
+     * ou si le mot de passe est vide.
+     */
     public void signup(String login, String password) {
         if (login == null || login.trim().isEmpty()) {
             throw new IllegalArgumentException("Le login ne peut pas etre vide.");
@@ -73,5 +78,21 @@ public class UserService {
         User newUser = new User(login, hash);
         usersByLogin.put(login, newUser);
         saveUsers();
+    }
+
+    /**
+     * Tente de connecter un utilisateur.
+     * Retourne l'utilisateur si les identifiants sont valides, sinon null.
+     */
+    public User login(String login, String password) {
+        if (login == null || password == null) {
+            return null;
+        }
+        User user = usersByLogin.get(login);
+        if (user == null) {
+            return null; // login inconnu
+        }
+        boolean match = BCrypt.checkpw(password, user.getPasswordHash());
+        return match ? user : null;
     }
 }

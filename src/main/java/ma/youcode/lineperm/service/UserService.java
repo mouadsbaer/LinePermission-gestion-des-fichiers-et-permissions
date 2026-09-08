@@ -57,6 +57,9 @@ public class UserService {
         if (login == null || login.trim().isEmpty()) {
             throw new IllegalArgumentException("Le login ne peut pas etre vide.");
         }
+        if (login.contains(" ") || login.contains(":")) {
+            throw new IllegalArgumentException("Le login ne peut pas contenir d'espace ni de ':'.");
+        }
         if (password == null || password.trim().isEmpty()) {
             throw new IllegalArgumentException("Le mot de passe ne peut pas etre vide.");
         }

@@ -19,6 +19,7 @@ public class UserService {
         loadUsers();
     }
 
+
     private void loadUsers() {
         Path path = Paths.get(STORAGE_FILE);
         if (!Files.exists(path)) {
@@ -53,12 +54,15 @@ public class UserService {
         }
     }
 
+    // --- Methodes metier ---
+
     /**
      * Cree un nouveau compte.
      * Leve une IllegalArgumentException si le login est invalide, deja pris,
      * ou si le mot de passe est vide.
      */
     public void signup(String login, String password) {
+        // Verifications
         if (login == null || login.trim().isEmpty()) {
             throw new IllegalArgumentException("Le login ne peut pas etre vide.");
         }
@@ -72,6 +76,7 @@ public class UserService {
             throw new IllegalArgumentException("Ce login est deja pris.");
         }
 
+        // Hachage du mot de passe
         String salt = BCrypt.gensalt();
         String hash = BCrypt.hashpw(password, salt);
 
@@ -83,6 +88,7 @@ public class UserService {
     /**
      * Tente de connecter un utilisateur.
      * Retourne l'utilisateur si les identifiants sont valides, sinon null.
+     * (meme message pour login inconnu et mauvais mot de passe)
      */
     public User login(String login, String password) {
         if (login == null || password == null) {
@@ -92,7 +98,13 @@ public class UserService {
         if (user == null) {
             return null; // login inconnu
         }
+        // Verification du mot de passe
         boolean match = BCrypt.checkpw(password, user.getPasswordHash());
         return match ? user : null;
+    }
+
+    // Pour verifier l'existence d'un login (utile dans ConsoleApp)
+    public boolean userExists(String login) {
+        return usersByLogin.containsKey(login);
     }
 }

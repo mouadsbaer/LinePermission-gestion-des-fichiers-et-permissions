@@ -38,4 +38,17 @@ public class UserService {
             System.err.println("Erreur lors du chargement des comptes : " + e.getMessage());
         }
     }
+
+    private void saveUsers() {
+        Path path = Paths.get(STORAGE_FILE);
+        StringBuilder sb = new StringBuilder();
+        for (User user : usersByLogin.values()) {
+            sb.append(user.getLogin()).append(":").append(user.getPasswordHash()).append("\n");
+        }
+        try {
+            Files.write(path, sb.toString().getBytes());
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la sauvegarde : " + e.getMessage());
+        }
+    }
 }

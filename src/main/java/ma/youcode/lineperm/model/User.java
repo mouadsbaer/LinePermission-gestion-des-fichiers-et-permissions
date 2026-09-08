@@ -2,5 +2,10 @@ package ma.youcode.lineperm.model;
 
 public class User {
     private final String login;
-    private final String passwordHash;
+    private final String passwordHash; // empreinte bcrypt
+
+    public User(String login, String passwordHash) {
+        this.login = login;
+        this.passwordHash = passwordHash;
+    }
 }

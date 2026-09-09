@@ -56,10 +56,15 @@ public class ConsoleApp {
     // --- Gestionnaires de commandes ---
 
     private void handleSignup(String[] parts) {
+        if (currentUser != null) {
+            System.out.println("Vous etes deje connecte. Deconnectez-vous d'abord.");
+            return;
+        }
         if (parts.length < 2) {
             System.out.println("Usage: signup <login> <mot_de_passe>");
             return;
         }
+        // On recupere le login et le mot de passe
         String[] args = parts[1].split(" ", 2);
         if (args.length < 2) {
             System.out.println("Usage: signup <login> <mot_de_passe>");
@@ -77,6 +82,10 @@ public class ConsoleApp {
     }
 
     private void handleLogin(String[] parts) {
+        if (currentUser != null) {
+            System.out.println("Vous etes deja connecte. Deconnectez-vous d'abord.");
+            return;
+        }
         if (parts.length < 2) {
             System.out.println("Usage: login <login> <mot_de_passe>");
             return;
@@ -91,6 +100,7 @@ public class ConsoleApp {
 
         User user = userService.login(login, password);
         if (user == null) {
+            // Meme message que pour login inconnu ou mauvais mot de passe
             System.out.println("Login ou mot de passe incorrect.");
         } else {
             currentUser = user;

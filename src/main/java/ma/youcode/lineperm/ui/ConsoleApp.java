@@ -28,6 +28,9 @@ public class ConsoleApp {
                 case "signup":
                     handleSignup(parts);
                     break;
+                case "login":
+                    handleLogin(parts);
+                    break;
                 case "exit":
                     System.out.println("Au revoir !");
                     return;
@@ -64,6 +67,28 @@ public class ConsoleApp {
             System.out.println("Compte cree avec succes !");
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    private void handleLogin(String[] parts) {
+        if (parts.length < 2) {
+            System.out.println("Usage: login <login> <mot_de_passe>");
+            return;
+        }
+        String[] args = parts[1].split(" ", 2);
+        if (args.length < 2) {
+            System.out.println("Usage: login <login> <mot_de_passe>");
+            return;
+        }
+        String login = args[0].trim();
+        String password = args[1].trim();
+
+        User user = userService.login(login, password);
+        if (user == null) {
+            System.out.println("Login ou mot de passe incorrect.");
+        } else {
+            currentUser = user;
+            System.out.println("Bienvenue " + login + " !");
         }
     }
 }

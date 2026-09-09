@@ -18,7 +18,7 @@ public class ConsoleApp {
             String line = scanner.nextLine().trim();
 
             if (line.isEmpty()) {
-                continue; // ligne vide -> on ignore
+                continue; // ligne vide â†’ on ignore
             }
 
             String[] parts = line.split(" ", 2);
@@ -57,14 +57,14 @@ public class ConsoleApp {
 
     private void handleSignup(String[] parts) {
         if (currentUser != null) {
-            System.out.println("Vous etes deje connecte. Deconnectez-vous d'abord.");
+            System.out.println("Vous etes deje connecte. DÃ©connectez-vous d'abord.");
             return;
         }
         if (parts.length < 2) {
             System.out.println("Usage: signup <login> <mot_de_passe>");
             return;
         }
-        // On recupere le login et le mot de passe
+        // On rÃ©cupÃ¨re le login et le mot de passe
         String[] args = parts[1].split(" ", 2);
         if (args.length < 2) {
             System.out.println("Usage: signup <login> <mot_de_passe>");
@@ -100,7 +100,7 @@ public class ConsoleApp {
 
         User user = userService.login(login, password);
         if (user == null) {
-            // Meme message que pour login inconnu ou mauvais mot de passe
+            // MÃªme message que pour login inconnu ou mauvais mot de passe
             System.out.println("Login ou mot de passe incorrect.");
         } else {
             currentUser = user;

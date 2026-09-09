@@ -31,10 +31,14 @@ public class ConsoleApp {
                 case "login":
                     handleLogin(parts);
                     break;
+                case "logout":
+                    handleLogout();
+                    break;
                 case "exit":
                     System.out.println("Au revoir !");
                     return;
                 default:
+                    // Commande inconnue (ou commande de la partie 2)
                     System.out.println("Commande inconnue.");
                     break;
             }
@@ -48,6 +52,8 @@ public class ConsoleApp {
             return currentUser.getLogin() + "@linperm> ";
         }
     }
+
+    // --- Gestionnaires de commandes ---
 
     private void handleSignup(String[] parts) {
         if (parts.length < 2) {
@@ -90,5 +96,14 @@ public class ConsoleApp {
             currentUser = user;
             System.out.println("Bienvenue " + login + " !");
         }
+    }
+
+    private void handleLogout() {
+        if (currentUser == null) {
+            System.out.println("Personne n'est connecte.");
+            return;
+        }
+        System.out.println("Au revoir " + currentUser.getLogin() + " !");
+        currentUser = null;
     }
 }

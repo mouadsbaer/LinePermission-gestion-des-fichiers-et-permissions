@@ -13,11 +13,12 @@ public class ConsoleApp {
     public void start() {
         System.out.println("Bienvenue dans LinePermission !");
         while (true) {
-            System.out.print("linperm> ");
+            String prompt = buildPrompt();
+            System.out.print(prompt);
             String line = scanner.nextLine().trim();
 
             if (line.isEmpty()) {
-                continue;
+                continue; // ligne vide -> on ignore
             }
 
             String[] parts = line.split(" ", 2);
@@ -31,6 +32,14 @@ public class ConsoleApp {
                     System.out.println("Commande inconnue.");
                     break;
             }
+        }
+    }
+
+    private String buildPrompt() {
+        if (currentUser == null) {
+            return "linperm> ";
+        } else {
+            return currentUser.getLogin() + "@linperm> ";
         }
     }
 }

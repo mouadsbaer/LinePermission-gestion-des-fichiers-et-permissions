@@ -25,6 +25,9 @@ public class ConsoleApp {
             String command = parts[0].toLowerCase();
 
             switch (command) {
+                case "signup":
+                    handleSignup(parts);
+                    break;
                 case "exit":
                     System.out.println("Au revoir !");
                     return;
@@ -40,6 +43,27 @@ public class ConsoleApp {
             return "linperm> ";
         } else {
             return currentUser.getLogin() + "@linperm> ";
+        }
+    }
+
+    private void handleSignup(String[] parts) {
+        if (parts.length < 2) {
+            System.out.println("Usage: signup <login> <mot_de_passe>");
+            return;
+        }
+        String[] args = parts[1].split(" ", 2);
+        if (args.length < 2) {
+            System.out.println("Usage: signup <login> <mot_de_passe>");
+            return;
+        }
+        String login = args[0].trim();
+        String password = args[1].trim();
+
+        try {
+            userService.signup(login, password);
+            System.out.println("Compte cree avec succes !");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
     }
 }

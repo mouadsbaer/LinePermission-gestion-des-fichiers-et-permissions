@@ -56,7 +56,6 @@ public class ConsoleApp {
                     System.out.println("Au revoir !");
                     return;
                 default:
-                    // Commande inconnue (ou commande de la partie 2)
                     System.out.println("Commande inconnue.");
                     break;
             }
@@ -135,6 +134,10 @@ public class ConsoleApp {
         currentUser = null;
     }
 
+    private void printDenied() {
+        System.out.println("Permission denied.");
+    }
+
     private boolean needLogin() {
         if (currentUser == null) {
             System.out.println("Vous devez etre connecte.");
@@ -187,7 +190,7 @@ public class ConsoleApp {
         }
         String contenu = fileService.lire(currentUser, nom);
         if (contenu == null) {
-            System.out.println("Permission denied.");
+            printDenied();
             return;
         }
         System.out.print(contenu);
@@ -211,7 +214,7 @@ public class ConsoleApp {
         }
         // on verifie w avant de faire saisir le texte
         if (!fileService.peutEcrire(currentUser, nom)) {
-            System.out.println("Permission denied.");
+            printDenied();
             return;
         }
         if (fileService.masquerContenu(currentUser, nom)) {
@@ -229,7 +232,7 @@ public class ConsoleApp {
         }
         String resultat = fileService.ecrire(currentUser, nom, sb.toString());
         if (resultat.equals("DENIED")) {
-            System.out.println("Permission denied.");
+            printDenied();
         } else if (resultat.equals("OK")) {
             System.out.println("Fichier enregistre.");
         } else {
@@ -274,7 +277,7 @@ public class ConsoleApp {
             resultat = fileService.donnerDroit(currentUser, nom, droit);
         }
         if (resultat.equals("DENIED")) {
-            System.out.println("Permission denied.");
+            printDenied();
         } else if (resultat.equals("ALREADY")) {
             if (retirer) {
                 System.out.println("Le droit " + droit + " n'etait pas accorde.");

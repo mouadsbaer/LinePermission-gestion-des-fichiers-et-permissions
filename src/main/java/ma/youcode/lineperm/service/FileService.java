@@ -164,4 +164,33 @@ public class FileService {
         saveFichiers();
         return "OK";
     }
+
+    // chmod n'agit que sur le bloc autres. Seul le proprietaire peut le faire.
+    public String donnerDroit(User user, String nom, char droit) {
+        FichierProtege f = trouver(nom);
+        if (f == null) {
+            return "NOT_FOUND";
+        }
+        if (!ControleAcces.estProprietaire(user, f)) {
+            return "DENIED";
+        }
+        boolean deja = false;
+        if (droit == 'r') {
+            deja = f.isrAutres();
+            f.setrAutres(true);
+        } else if (droit == 'w') {
+            deja = f.iswAutres();
+            f.setwAutres(true);
+        } else if (droit == 'd') {
+            deja = f.isdAutres();
+            f.setdAutres(true);
+        } else {
+            return "UNKNOWN_RIGHT";
+        }
+        saveFichiers();
+        if (deja) {
+            return "ALREADY";
+        }
+        return "OK";
+    }
 }

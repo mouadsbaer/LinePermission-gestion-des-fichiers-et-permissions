@@ -40,6 +40,20 @@ public class FileService {
         }
     }
 
+    // prive : personne ne doit ecrire le fichier de droits sans passer par le service
+    private void saveFichiers() {
+        Path path = Paths.get(DROITS_FILE);
+        StringBuilder sb = new StringBuilder();
+        for (FichierProtege f : fichiers) {
+            sb.append(f.toStorageLine()).append("\n");
+        }
+        try {
+            Files.writeString(path, sb.toString());
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la sauvegarde des droits : " + e.getMessage());
+        }
+    }
+
     public List<FichierProtege> lister() {
         return fichiers;
     }

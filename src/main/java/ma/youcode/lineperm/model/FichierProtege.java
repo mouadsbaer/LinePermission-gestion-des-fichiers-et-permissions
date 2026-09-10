@@ -75,4 +75,25 @@ public class FichierProtege {
     public void setdAutres(boolean dAutres) {
         this.dAutres = dAutres;
     }
+
+    // construit "rwd" ou "r--" a partir de trois booleens
+    private String bloc(boolean r, boolean w, boolean d) {
+        String br = r ? "r" : "-";
+        String bw = w ? "w" : "-";
+        String bd = d ? "d" : "-";
+        return br + bw + bd;
+    }
+
+    public String getBlocProprio() {
+        return bloc(rProprio, wProprio, dProprio);
+    }
+
+    public String getBlocAutres() {
+        return bloc(rAutres, wAutres, dAutres);
+    }
+
+    // format d'affichage : rwd|--- proprietaire nomFichier
+    public String toLsLine() {
+        return getBlocProprio() + "|" + getBlocAutres() + " " + proprietaire + " " + nom;
+    }
 }

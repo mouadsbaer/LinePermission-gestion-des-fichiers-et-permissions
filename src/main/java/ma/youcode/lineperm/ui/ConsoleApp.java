@@ -1,12 +1,15 @@
 package ma.youcode.lineperm.ui;
 
+import ma.youcode.lineperm.model.FichierProtege;
 import ma.youcode.lineperm.model.User;
+import ma.youcode.lineperm.service.FileService;
 import ma.youcode.lineperm.service.UserService;
 
 import java.util.Scanner;
 
 public class ConsoleApp {
     private final UserService userService = new UserService();
+    private final FileService fileService = new FileService();
     private User currentUser = null;
     private final Scanner scanner = new Scanner(System.in);
 
@@ -33,6 +36,12 @@ public class ConsoleApp {
                     break;
                 case "logout":
                     handleLogout();
+                    break;
+                case "ls":
+                    handleLs(parts);
+                    break;
+                case "touch":
+                    handleTouch(parts);
                     break;
                 case "exit":
                     System.out.println("Au revoir !");
@@ -115,5 +124,42 @@ public class ConsoleApp {
         }
         System.out.println("Au revoir " + currentUser.getLogin() + " !");
         currentUser = null;
+    }
+
+    private boolean needLogin() {
+        if (currentUser == null) {
+            System.out.println("Vous devez etre connecte.");
+            return false;
+        }
+        return true;
+    }
+
+    private void handleLs(String[] parts) {
+        if (!needLogin()) {
+            return;
+        }
+        if (parts.length < 2 || !parts[1].equals("-l")) {
+            System.out.println("Usage: ls -l");
+            return;
+        }
+        for (FichierProtege f : fileService.lister()) {
+            System.out.println(f.toLsLine());
+        }
+    }
+
+    private void handleTouch(String[] parts) {
+        if (!needLogin()) {
+            return;
+        }
+        if (parts.length < 2) {
+            System.out.println("Usage: touch <fichier>");
+            return;
+        }
+        String resultat = fileService.creer(currentUser.getLogin(), parts[1].trim());
+        if (resultat.equals("OK")) {
+            System.out.println("Fichier cree.");
+        } else {
+            System.out.println(resultat);
+        }
     }
 }

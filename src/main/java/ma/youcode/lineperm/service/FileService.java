@@ -193,4 +193,32 @@ public class FileService {
         }
         return "OK";
     }
+
+    public String retirerDroit(User user, String nom, char droit) {
+        FichierProtege f = trouver(nom);
+        if (f == null) {
+            return "NOT_FOUND";
+        }
+        if (!ControleAcces.estProprietaire(user, f)) {
+            return "DENIED";
+        }
+        boolean dejaAbsent = false;
+        if (droit == 'r') {
+            dejaAbsent = !f.isrAutres();
+            f.setrAutres(false);
+        } else if (droit == 'w') {
+            dejaAbsent = !f.iswAutres();
+            f.setwAutres(false);
+        } else if (droit == 'd') {
+            dejaAbsent = !f.isdAutres();
+            f.setdAutres(false);
+        } else {
+            return "UNKNOWN_RIGHT";
+        }
+        saveFichiers();
+        if (dejaAbsent) {
+            return "ALREADY";
+        }
+        return "OK";
+    }
 }

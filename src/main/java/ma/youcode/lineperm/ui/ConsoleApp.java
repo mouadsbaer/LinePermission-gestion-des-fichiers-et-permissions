@@ -43,6 +43,12 @@ public class ConsoleApp {
                 case "touch":
                     handleTouch(parts);
                     break;
+                case "cat":
+                    handleCat(parts);
+                    break;
+                case "nano":
+                    handleNano(parts);
+                    break;
                 case "exit":
                     System.out.println("Au revoir !");
                     return;
@@ -158,6 +164,71 @@ public class ConsoleApp {
         String resultat = fileService.creer(currentUser.getLogin(), parts[1].trim());
         if (resultat.equals("OK")) {
             System.out.println("Fichier cree.");
+        } else {
+            System.out.println(resultat);
+        }
+    }
+
+    private void handleCat(String[] parts) {
+        if (!needLogin()) {
+            return;
+        }
+        if (parts.length < 2) {
+            System.out.println("Usage: cat <fichier>");
+            return;
+        }
+        String nom = parts[1].trim();
+        if (!fileService.existe(nom)) {
+            System.out.println("Fichier introuvable.");
+            return;
+        }
+        String contenu = fileService.lire(currentUser, nom);
+        if (contenu == null) {
+            System.out.println("Permission denied.");
+            return;
+        }
+        System.out.print(contenu);
+        if (!contenu.isEmpty() && !contenu.endsWith("\n")) {
+            System.out.println();
+        }
+    }
+
+    private void handleNano(String[] parts) {
+        if (!needLogin()) {
+            return;
+        }
+        if (parts.length < 2) {
+            System.out.println("Usage: nano <fichier>");
+            return;
+        }
+        String nom = parts[1].trim();
+        if (!fileService.existe(nom)) {
+            System.out.println("Fichier introuvable.");
+            return;
+        }
+        // on verifie w avant de faire saisir le texte
+        if (!fileService.peutEcrire(currentUser, nom)) {
+            System.out.println("Permission denied.");
+            return;
+        }
+        if (fileService.masquerContenu(currentUser, nom)) {
+            System.out.println("Edition a l'aveugle (pas de droit r). Tapez EOF pour terminer.");
+        } else {
+            System.out.println("Saisie (une ligne EOF pour terminer) :");
+        }
+        StringBuilder sb = new StringBuilder();
+        while (true) {
+            String ligne = scanner.nextLine();
+            if (ligne.equals("EOF")) {
+                break;
+            }
+            sb.append(ligne).append("\n");
+        }
+        String resultat = fileService.ecrire(currentUser, nom, sb.toString());
+        if (resultat.equals("DENIED")) {
+            System.out.println("Permission denied.");
+        } else if (resultat.equals("OK")) {
+            System.out.println("Fichier enregistre.");
         } else {
             System.out.println(resultat);
         }

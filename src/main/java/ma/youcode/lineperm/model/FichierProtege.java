@@ -96,4 +96,30 @@ public class FichierProtege {
     public String toLsLine() {
         return getBlocProprio() + "|" + getBlocAutres() + " " + proprietaire + " " + nom;
     }
+
+    // une ligne de persistance : nom;proprietaire;rwd;r--
+    public String toStorageLine() {
+        return nom + ";" + proprietaire + ";" + getBlocProprio() + ";" + getBlocAutres();
+    }
+
+    public static FichierProtege fromStorageLine(String line) {
+        String[] parts = line.split(";");
+        if (parts.length != 4) {
+            return null;
+        }
+        String nom = parts[0];
+        String proprietaire = parts[1];
+        String blocP = parts[2];
+        String blocA = parts[3];
+        if (blocP.length() != 3 || blocA.length() != 3) {
+            return null;
+        }
+        boolean rP = blocP.charAt(0) == 'r';
+        boolean wP = blocP.charAt(1) == 'w';
+        boolean dP = blocP.charAt(2) == 'd';
+        boolean rA = blocA.charAt(0) == 'r';
+        boolean wA = blocA.charAt(1) == 'w';
+        boolean dA = blocA.charAt(2) == 'd';
+        return new FichierProtege(nom, proprietaire, rP, wP, dP, rA, wA, dA);
+    }
 }

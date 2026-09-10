@@ -1,6 +1,8 @@
 package ma.youcode.lineperm.service;
 
+import ma.youcode.lineperm.access.ControleAcces;
 import ma.youcode.lineperm.model.FichierProtege;
+import ma.youcode.lineperm.model.User;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -97,5 +99,25 @@ public class FileService {
         fichiers.add(nouveau);
         saveFichiers();
         return "OK";
+    }
+
+    // null = acces refuse, chaine vide = fichier vide
+    public String lire(User user, String nom) {
+        FichierProtege f = trouver(nom);
+        if (f == null) {
+            return "NOT_FOUND";
+        }
+        if (!ControleAcces.estAutorise(user, f, 'r')) {
+            return null;
+        }
+        Path contenu = Paths.get(DATA_DIR).resolve(nom);
+        try {
+            if (!Files.exists(contenu)) {
+                return "";
+            }
+            return Files.readString(contenu);
+        } catch (IOException e) {
+            return "";
+        }
     }
 }

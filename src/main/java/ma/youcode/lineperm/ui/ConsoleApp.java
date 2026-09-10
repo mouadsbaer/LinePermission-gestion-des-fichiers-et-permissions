@@ -49,6 +49,9 @@ public class ConsoleApp {
                 case "nano":
                     handleNano(parts);
                     break;
+                case "chmod":
+                    handleChmod(parts);
+                    break;
                 case "exit":
                     System.out.println("Au revoir !");
                     return;
@@ -229,6 +232,61 @@ public class ConsoleApp {
             System.out.println("Permission denied.");
         } else if (resultat.equals("OK")) {
             System.out.println("Fichier enregistre.");
+        } else {
+            System.out.println(resultat);
+        }
+    }
+
+    private void handleChmod(String[] parts) {
+        if (!needLogin()) {
+            return;
+        }
+        if (parts.length < 2) {
+            System.out.println("Usage: chmod [-]r|w|d <fichier>");
+            return;
+        }
+        String[] args = parts[1].trim().split(" ", 2);
+        if (args.length < 2) {
+            System.out.println("Usage: chmod [-]r|w|d <fichier>");
+            return;
+        }
+        String flag = args[0];
+        String nom = args[1].trim();
+        boolean retirer = flag.startsWith("-");
+        String lettre = retirer ? flag.substring(1) : flag;
+        if (lettre.length() != 1) {
+            System.out.println("Usage: chmod [-]r|w|d <fichier>");
+            return;
+        }
+        char droit = lettre.charAt(0);
+        if (droit != 'r' && droit != 'w' && droit != 'd') {
+            System.out.println("Droit inconnu. Utilisez r, w ou d.");
+            return;
+        }
+        if (!fileService.existe(nom)) {
+            System.out.println("Fichier introuvable.");
+            return;
+        }
+        String resultat;
+        if (retirer) {
+            resultat = fileService.retirerDroit(currentUser, nom, droit);
+        } else {
+            resultat = fileService.donnerDroit(currentUser, nom, droit);
+        }
+        if (resultat.equals("DENIED")) {
+            System.out.println("Permission denied.");
+        } else if (resultat.equals("ALREADY")) {
+            if (retirer) {
+                System.out.println("Le droit " + droit + " n'etait pas accorde.");
+            } else {
+                System.out.println("Le droit " + droit + " est deja accorde.");
+            }
+        } else if (resultat.equals("OK")) {
+            if (retirer) {
+                System.out.println("Droit " + droit + " retire aux autres.");
+            } else {
+                System.out.println("Droit " + droit + " donne aux autres.");
+            }
         } else {
             System.out.println(resultat);
         }

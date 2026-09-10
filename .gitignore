@@ -2,3 +2,5 @@ out/
 *.class
 .idea/
 *.iml
+data/
+fichiers.txt

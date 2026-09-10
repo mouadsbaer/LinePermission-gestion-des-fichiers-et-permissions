@@ -13,15 +13,23 @@ public class FichierProtege {
     private boolean wAutres;
     private boolean dAutres;
 
+    // constructeur court : fichier neuf = rwd|---
     public FichierProtege(String nom, String proprietaire) {
+        this(nom, proprietaire, true, true, true, false, false, false);
+    }
+
+    // constructeur long : utile au chargement depuis le fichier de droits
+    public FichierProtege(String nom, String proprietaire,
+                          boolean rProprio, boolean wProprio, boolean dProprio,
+                          boolean rAutres, boolean wAutres, boolean dAutres) {
         this.nom = nom;
         this.proprietaire = proprietaire;
-        this.rProprio = true;
-        this.wProprio = true;
-        this.dProprio = true;
-        this.rAutres = false;
-        this.wAutres = false;
-        this.dAutres = false;
+        this.rProprio = rProprio;
+        this.wProprio = wProprio;
+        this.dProprio = dProprio;
+        this.rAutres = rAutres;
+        this.wAutres = wAutres;
+        this.dAutres = dAutres;
     }
 
     public String getNom() {

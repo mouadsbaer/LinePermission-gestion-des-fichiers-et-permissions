@@ -120,4 +120,43 @@ public class FileService {
             return "";
         }
     }
+
+    public boolean peutEcrire(User user, String nom) {
+        FichierProtege f = trouver(nom);
+        if (f == null) {
+            return false;
+        }
+        return ControleAcces.estAutorise(user, f, 'w');
+    }
+
+    public boolean peutLire(User user, String nom) {
+        FichierProtege f = trouver(nom);
+        if (f == null) {
+            return false;
+        }
+        return ControleAcces.estAutorise(user, f, 'r');
+    }
+
+    // ecrire le contenu dans data/ apres verification du droit w
+    public String ecrire(User user, String nom, String contenu) {
+        FichierProtege f = trouver(nom);
+        if (f == null) {
+            return "NOT_FOUND";
+        }
+        if (!ControleAcces.estAutorise(user, f, 'w')) {
+            return "DENIED";
+        }
+        try {
+            Path dataDir = Paths.get(DATA_DIR);
+            if (!Files.exists(dataDir)) {
+                Files.createDirectories(dataDir);
+            }
+            Path fichier = dataDir.resolve(nom);
+            Files.writeString(fichier, contenu);
+        } catch (IOException e) {
+            return "Erreur lors de l'ecriture.";
+        }
+        saveFichiers();
+        return "OK";
+    }
 }

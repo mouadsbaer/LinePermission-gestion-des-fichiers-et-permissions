@@ -66,4 +66,33 @@ public class FileService {
         }
         return null;
     }
+
+    public boolean existe(String nom) {
+        return trouver(nom) != null;
+    }
+
+    // touch : cree un fichier vide en rwd|---, le createur est proprietaire
+    public String creer(String login, String nom) {
+        if (nom == null || nom.trim().isEmpty()) {
+            return "Le nom du fichier ne peut pas etre vide.";
+        }
+        nom = nom.trim();
+        if (trouver(nom) != null) {
+            return "Ce nom de fichier est deja pris.";
+        }
+        try {
+            Path dataDir = Paths.get(DATA_DIR);
+            if (!Files.exists(dataDir)) {
+                Files.createDirectories(dataDir);
+            }
+            Path contenu = dataDir.resolve(nom);
+            Files.writeString(contenu, "");
+        } catch (IOException e) {
+            return "Erreur lors de la creation du fichier.";
+        }
+        FichierProtege nouveau = new FichierProtege(nom, login);
+        fichiers.add(nouveau);
+        saveFichiers();
+        return "OK";
+    }
 }

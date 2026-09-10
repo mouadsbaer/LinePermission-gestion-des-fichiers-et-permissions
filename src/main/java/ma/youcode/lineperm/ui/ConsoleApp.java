@@ -18,7 +18,7 @@ public class ConsoleApp {
             String line = scanner.nextLine().trim();
 
             if (line.isEmpty()) {
-                continue; // ligne vide â†’ on ignore
+                continue; // ligne vide → on ignore
             }
 
             String[] parts = line.split(" ", 2);
@@ -57,14 +57,14 @@ public class ConsoleApp {
 
     private void handleSignup(String[] parts) {
         if (currentUser != null) {
-            System.out.println("Vous etes deje connecte. DÃ©connectez-vous d'abord.");
+            System.out.println("Vous êtes déjà connecté. Déconnectez-vous d'abord.");
             return;
         }
         if (parts.length < 2) {
             System.out.println("Usage: signup <login> <mot_de_passe>");
             return;
         }
-        // On rÃ©cupÃ¨re le login et le mot de passe
+        // On récupère le login et le mot de passe
         String[] args = parts[1].split(" ", 2);
         if (args.length < 2) {
             System.out.println("Usage: signup <login> <mot_de_passe>");
@@ -75,7 +75,7 @@ public class ConsoleApp {
 
         try {
             userService.signup(login, password);
-            System.out.println("Compte cree avec succes !");
+            System.out.println("Compte créé avec succès !");
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
@@ -83,7 +83,7 @@ public class ConsoleApp {
 
     private void handleLogin(String[] parts) {
         if (currentUser != null) {
-            System.out.println("Vous etes deja connecte. Deconnectez-vous d'abord.");
+            System.out.println("Vous êtes déjà connecté. Déconnectez-vous d'abord.");
             return;
         }
         if (parts.length < 2) {
@@ -100,7 +100,7 @@ public class ConsoleApp {
 
         User user = userService.login(login, password);
         if (user == null) {
-            // MÃªme message que pour login inconnu ou mauvais mot de passe
+            // Même message que pour login inconnu ou mauvais mot de passe
             System.out.println("Login ou mot de passe incorrect.");
         } else {
             currentUser = user;
@@ -110,7 +110,7 @@ public class ConsoleApp {
 
     private void handleLogout() {
         if (currentUser == null) {
-            System.out.println("Personne n'est connecte.");
+            System.out.println("Personne n'est connecté.");
             return;
         }
         System.out.println("Au revoir " + currentUser.getLogin() + " !");

@@ -19,11 +19,12 @@ public class UserService {
         loadUsers();
     }
 
+    // --- Chargement / sauvegarde ---
 
     private void loadUsers() {
         Path path = Paths.get(STORAGE_FILE);
         if (!Files.exists(path)) {
-            return; // premier lancement, aucun fichier
+            return; 
         }
         try {
             List<String> lines = Files.readAllLines(path);
@@ -54,26 +55,21 @@ public class UserService {
         }
     }
 
-    // --- MÃ©thodes mÃ©tier ---
+    // --- Méthodes métier ---
 
-    /**
-     * CrÃ©e un nouveau compte.
-     * LÃ¨ve une IllegalArgumentException si le login est invalide, dÃ©jÃ  pris,
-     * ou si le mot de passe est vide.
-     */
+  
     public void signup(String login, String password) {
-        // VÃ©rifications
         if (login == null || login.trim().isEmpty()) {
-            throw new IllegalArgumentException("Le login ne peut pas etre vide.");
+            throw new IllegalArgumentException("Le login ne peut pas être vide.");
         }
         if (login.contains(" ") || login.contains(":")) {
             throw new IllegalArgumentException("Le login ne peut pas contenir d'espace ni de ':'.");
         }
         if (password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("Le mot de passe ne peut pas etre vide.");
+            throw new IllegalArgumentException("Le mot de passe ne peut pas être vide.");
         }
         if (usersByLogin.containsKey(login)) {
-            throw new IllegalArgumentException("Ce login est deja pris.");
+            throw new IllegalArgumentException("Ce login est déjà pris.");
         }
 
         // Hachage du mot de passe
@@ -85,25 +81,20 @@ public class UserService {
         saveUsers();
     }
 
-    /**
-     * Tente de connecter un utilisateur.
-     * Retourne l'utilisateur si les identifiants sont valides, sinon null.
-     * (mÃªme message pour login inconnu et mauvais mot de passe)
-     */
+  
     public User login(String login, String password) {
         if (login == null || password == null) {
             return null;
         }
         User user = usersByLogin.get(login);
         if (user == null) {
-            return null; // login inconnu
+            return null; 
         }
-        // VÃ©rification du mot de passe
+        // Vérification du mot de passe
         boolean match = BCrypt.checkpw(password, user.getPasswordHash());
         return match ? user : null;
     }
 
-    // Pour vÃ©rifier l'existence d'un login (utile dans ConsoleApp)
     public boolean userExists(String login) {
         return usersByLogin.containsKey(login);
     }

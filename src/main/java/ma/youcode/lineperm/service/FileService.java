@@ -77,6 +77,9 @@ public class FileService {
             return "Le nom du fichier ne peut pas etre vide.";
         }
         nom = nom.trim();
+        if (nom.contains("/") || nom.contains("\\") || nom.contains("..")) {
+            return "Le nom ne peut pas contenir un chemin.";
+        }
         if (trouver(nom) != null) {
             return "Ce nom de fichier est deja pris.";
         }

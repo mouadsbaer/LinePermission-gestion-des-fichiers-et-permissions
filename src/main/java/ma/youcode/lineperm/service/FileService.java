@@ -137,6 +137,11 @@ public class FileService {
         return ControleAcces.estAutorise(user, f, 'r');
     }
 
+    // cas rwd|-w- : nano ne doit pas montrer le contenu actuel
+    public boolean masquerContenu(User user, String nom) {
+        return peutEcrire(user, nom) && !peutLire(user, nom);
+    }
+
     // ecrire le contenu dans data/ apres verification du droit w
     public String ecrire(User user, String nom, String contenu) {
         FichierProtege f = trouver(nom);
